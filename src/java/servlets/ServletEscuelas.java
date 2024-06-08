@@ -4,7 +4,7 @@
  */
 package servlets;
 
-import beans.Escuela;
+import beans.Asignatura;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -67,12 +67,12 @@ public class ServletEscuelas extends HttpServlet {
             throws ServletException, IOException {
           try{
               Class.forName("com.mysql.jdbc.Driver");
-              String URL = "jdbc:mysql://localhost/universidad?user=root&password=root";
+              String URL = "jdbc:mysql://localhost/universidad";
               
-              connect = DriverManager.getConnection(URL);
+              connect = DriverManager.getConnection(URL,"root","");
               statement = connect.createStatement();
               
-              request.setAttribute("ListaEscuelas",getListaEscuelas());
+              request.setAttribute("ListaAsignaturas",getListaAsignaturas());
               
               connect.close();
           }catch(ClassNotFoundException | SQLException ex){
@@ -105,24 +105,26 @@ public class ServletEscuelas extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-    public List<Escuela> getListaEscuelas() throws SQLException {
-        String query = "SELECT * from Escuelas";
+    public List<Asignatura> getListaAsignaturas() throws SQLException {
+        String query = "SELECT * from asignatura";
         resultSet = statement.executeQuery(query);
         
-        List<Escuela> Escuelas = new ArrayList();
-        Escuela escuela;
+        List<Asignatura> Asignaturas = new ArrayList();
+        Asignatura asignatura;
         while(resultSet.next()){
-            escuela = new Escuela();
-            escuela.setClaveEscuela(resultSet.getString(1));
-            escuela.setNombreEscuela(resultSet.getString(2));
-            escuela.setDomicilio(resultSet.getString(3));
-            escuela.setCodigoPostal(resultSet.getInt(4));
-            escuela.setTurno(resultSet.getString(5));
-            escuela.setIdLocalidad(resultSet.getInt(6));
-            Escuelas.add(escuela);
+            asignatura = new Asignatura();
+            asignatura.setIdAsignatura(resultSet.getInt(1));
+            asignatura.setNombre(resultSet.getString(2));
+            asignatura.setCreditos(resultSet.getInt(3));
+            asignatura.setTipo(resultSet.getString(4));
+            asignatura.setCurso(resultSet.getInt(5));
+            asignatura.setCuatrimestre(resultSet.getInt(6));
+            asignatura.setIdProfesor(resultSet.getInt(7));
+            asignatura.setIdGrado(resultSet.getInt(8));
+            Asignaturas.add(asignatura);
             
         }
-        return Escuelas;
+        return Asignaturas;
     }
 
 }
